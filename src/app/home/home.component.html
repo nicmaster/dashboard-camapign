@@ -1,0 +1,104 @@
+<mk-box header="Welcome" [isCollapsable]="false" [isRemovable]="false">
+  <p>This GEPF Digital Communication Dashboard tool is an In-house build smart application to enable configuration, communication via the following platforms <b>SMS, USSD, Email, WhatsApp</b> etc.
+    Access to this platforms is based on assigned roles and entitlement. Other available features are comprehensive reports, detail usage, analytics for each platforms.</p>
+</mk-box>
+
+<mk-box header="Profile" [isCollapsable]="false" [isRemovable]="false"></mk-box>
+
+<section class="content">
+
+  <div class="row">
+    <div class="col-md-3">
+
+      <!-- Profile Image -->
+      <div class="box box-black">
+        <div class="box-body box-profile">
+          <img class="profile-user-img img-responsive img-circle" src="../../assets/img/user4-128x128.png" alt="User profile picture">
+
+          <h3 class="profile-username text-center">{{firstName}} {{lastName}}</h3>
+
+          <p class="text-muted text-center">.</p>
+
+          <ul class="list-group list-group-unbordered">
+            <li class="list-group-item">
+              <b>Access granted to the following:</b> <a class="pull-right"></a>
+            </li>
+            <li class="list-group-item">
+              <b>Send SMS</b> <a class="pull-right">ACTIVE</a>
+            </li>
+            <li class="list-group-item">
+              <b>Sent Messages(SMS)</b> <a class="pull-right">ACTIVE</a>
+            </li>
+          </ul>
+
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+
+
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+      <div class="nav-tabs-custom">
+
+        <ul class="nav nav-tabs">
+          <li class="activep"><a href="#settings" data-toggle="tab"><strong>DETAILS</strong></a></li>
+        </ul>
+        <div class="tab-content">
+
+          <div class="active tab-pane" id="settings">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Name</label>
+
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputName" readonly value="{{firstName}}" placeholder="Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Last Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" readonly id="inputName" value="{{lastName}}" placeholder="Last Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" readonly id="inputEmail" value="{{email}}" placeholder="Email">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputExperience" class="col-sm-2 control-label">Roles 
+                  and Entitlement
+                </label>
+
+                <div class="col-sm-10">
+                  <textarea class="form-control" id="inputExperience" readonly placeholder=""></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">User Name</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" readonly id="inputSkills" value="{{username}}" placeholder="Skills">
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- /.tab-pane -->
+        </div>
+        <!-- /.tab-content -->
+      </div>
+      <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+
+</section>
+<!-- /.content -->
+
