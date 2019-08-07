@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AlertRoutingModule } from './alert-routing.module';
-import { AlertComponent } from './alert.component';
+import { SentMessagesRoutingModule } from './sentmessages-routing.module';
+import { SentMessagesComponent } from './sentmessages.component';
 
 import { AlertModule as MkAlertModule, BoxModule } from 'angular-admin-lte';
 
 @NgModule({
   imports: [
     CommonModule,
-    AlertRoutingModule,
+    SentMessagesRoutingModule,
     MkAlertModule,
     BoxModule
   ],
-  declarations: [AlertComponent]
+  declarations: [SentMessagesComponent]
 })
 export class AlertModule { }

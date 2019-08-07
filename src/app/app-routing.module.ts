@@ -14,13 +14,13 @@ const routes: Routes = [
       component: HomeComponent
     }, {
       path: 'send-sms',
-      loadChildren: './+accordion/accordion.module#AccordionModule',
+      loadChildren: './+sendsms/sendsms.module#SendSmsModule',
       data: {
         title: 'Send SMS'
       }
     }, {
       path: 'sent-messages',
-      loadChildren: './+alert/alert.module#AlertModule',
+      loadChildren: './+sentmessages/sentmessages.module#AlertModule',
       data: {
         title: 'Sent Messages',
       }

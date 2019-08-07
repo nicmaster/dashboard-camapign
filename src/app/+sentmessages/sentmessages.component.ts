@@ -3,11 +3,11 @@ import { KeycloakService} from 'keycloak-angular';
 import { RestService} from "../services/rest.service"
 
 @Component({
-  selector: 'app-alert',
-  templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.css']
+  selector: 'app-sentmessages',
+  templateUrl: './sentmessages.component.html',
+  styleUrls: ['./sentmessages.component.css']
 })
-export class AlertComponent implements OnInit {
+export class SentMessagesComponent implements OnInit {
   private userid:string;
   private page:number=1;
   public smsHistoryData: any[];

@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit{
     firstName: string;
     lastName: string;
     email: string;
+    roles: any[];
 
   getUserInfoFromToken(): void {
     try{
@@ -35,6 +36,8 @@ export class HomeComponent implements OnInit{
           this.username = this.keycloak.getKeycloakInstance().profile.username;
           this.lastName = this.keycloak.getKeycloakInstance().profile.lastName;
           this.email = this.keycloak.getKeycloakInstance().profile.email;
+          this.roles = this.keycloak.getUserRoles();
+          console.log(this.roles)
       } catch(e){
         console.log('=failed cto load user')
       }

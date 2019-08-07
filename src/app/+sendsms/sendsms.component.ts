@@ -10,11 +10,11 @@ import { from } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-accordion',
-  templateUrl: './accordion.component.html',
-  styleUrls: ['./accordion.component.css']
+  selector: 'app-sendsms',
+  templateUrl: './sendsms.component.html',
+  styleUrls: ['./sendsms.component.css']
 })
-export class AccordionComponent implements OnInit {
+export class SendSmsComponent implements OnInit {
   sendsms: SendSmsModel;
 
   constructor(element: ElementRef, protected keycloak: KeycloakService, private restService: RestService) {

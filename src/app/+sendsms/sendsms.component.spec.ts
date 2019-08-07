@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccordionComponent } from './accordion.component';
+import { SendSmsComponent } from './sendsms.component';
 
 import { AccordionModule, BoxModule } from 'angular-admin-lte';
 
-describe('AccordionComponent', () => {
-  let component: AccordionComponent;
-  let fixture: ComponentFixture<AccordionComponent>;
+describe('SendSmsComponent', () => {
+  let component: SendSmsComponent;
+  let fixture: ComponentFixture<SendSmsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -14,13 +14,13 @@ describe('AccordionComponent', () => {
         AccordionModule,
         BoxModule
       ],
-      declarations: [ AccordionComponent ]
+      declarations: [ SendSmsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AccordionComponent);
+    fixture = TestBed.createComponent(SendSmsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

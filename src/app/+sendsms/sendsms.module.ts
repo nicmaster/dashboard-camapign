@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms'
-import { AccordionRoutingModule } from './accordion-routing.module';
-import { AccordionComponent } from './accordion.component';
+import { SendSmsRoutingModule } from './sendsms-routing.module';
+import { SendSmsComponent } from './sendsms.component';
 //import { RestService} from "../services/rest.service"
 
 import { AccordionModule as MkAccordionModule, BoxModule } from 'angular-admin-lte';
@@ -12,13 +12,13 @@ import { from } from 'rxjs';
 @NgModule({
   imports: [
     CommonModule,
-    AccordionRoutingModule,
+    SendSmsRoutingModule,
     MkAccordionModule,
     ReactiveFormsModule,
     FormsModule,
     //RestService,
     BoxModule
   ],
-  declarations: [AccordionComponent]
+  declarations: [SendSmsComponent]
 })
-export class AccordionModule { }
+export class SendSmsModule { }
