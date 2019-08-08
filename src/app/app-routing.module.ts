@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-
+import { Role } from './model/role';
+import { AppAuthGuard } from './app.authguard';
 const routes: Routes = [
   {
   path: '',
@@ -15,8 +16,10 @@ const routes: Routes = [
     }, {
       path: 'send-sms',
       loadChildren: './+sendsms/sendsms.module#SendSmsModule',
+      canActivate: [AppAuthGuard],
       data: {
-        title: 'Send SMS'
+        title: 'Send SMS',
+        roles: [Role.SmsUser]
       }
     }, {
       path: 'sent-messages',
