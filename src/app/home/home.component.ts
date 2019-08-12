@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit{
     Prism.highlightAll();
     this.getUserInfoFromToken();
   }
-
+    userID: string;
     username: string;
     fullName: string;
     firstName: string;
@@ -32,6 +32,8 @@ export class HomeComponent implements OnInit{
 
   getUserInfoFromToken(): void {
     try{
+          this.userID = this.keycloak.getKeycloakInstance().profile.id;
+          console.log(this.userID);
           this.firstName = this.keycloak.getKeycloakInstance().profile.firstName;
           this.username = this.keycloak.getKeycloakInstance().profile.username;
           this.lastName = this.keycloak.getKeycloakInstance().profile.lastName;

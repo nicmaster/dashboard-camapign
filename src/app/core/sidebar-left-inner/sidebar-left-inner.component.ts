@@ -27,7 +27,8 @@ export class SidebarLeftInnerComponent {
       }
   }
 
-  logoutUser(){
+  keycloackLogout(){
+    console.log("buttttton")
     this.keycloak.getKeycloakInstance().logout();
   }
 

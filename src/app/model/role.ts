@@ -1,4 +1,4 @@
 export enum Role {
-    SmsUser = 'sms-user',
+    SmsUser = 'sms-capture',
     Admin = 'campaign-user'
   }

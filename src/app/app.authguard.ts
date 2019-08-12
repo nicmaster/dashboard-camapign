@@ -20,12 +20,16 @@ export class AppAuthGuard extends KeycloakAuthGuard {
       } else {
         if (!this.roles || this.roles.length === 0) {
           resolve(false);
+          this.router.navigate(['/']);
+          return false;
         }
         let granted: boolean = false;
         for (const requiredRole of requiredRoles) {
           if (this.roles.indexOf(requiredRole) > -1) {
             granted = true;
             break;
+          }else{
+            this.router.navigate(['/']);
           }
         }
         resolve(granted);

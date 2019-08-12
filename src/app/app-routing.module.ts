@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { Role } from './model/role';
 import { AppAuthGuard } from './app.authguard';
@@ -24,8 +24,10 @@ const routes: Routes = [
     }, {
       path: 'sent-messages',
       loadChildren: './+sentmessages/sentmessages.module#AlertModule',
+      canActivate: [AppAuthGuard],
       data: {
         title: 'Sent Messages',
+        roles: [Role.SmsUser]
       }
     },
     {
@@ -100,6 +102,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AppAuthGuard]
 })
 export class AppRoutingModule { }
