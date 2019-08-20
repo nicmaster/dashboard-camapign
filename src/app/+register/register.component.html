@@ -13,7 +13,7 @@
           </div>
           <div class="box-body no-padding">
             <ul class="nav nav-pills nav-stacked">
-              <li *ngFor="let item of campaignsData"><a href="/#/campaign-setup/id/{{item.id}}/campaign-code/{{item.code}}" ng><i class="fa fa-newspaper-o"></i> {{item.name}}</a></li>
+              <li *ngFor="let item of campaignsData"><a href="/#/campaign-setup/id/{{item.id}}/campaign-code/{{item.campaignType}}" ng><i class="fa fa-newspaper-o"></i> {{item.campaignName}}</a></li>
             </ul>
           </div>
           <!-- /.box-body -->

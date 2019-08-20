@@ -15,9 +15,8 @@ let keycloakConfig: KeycloakConfig = {
 
 export const environment = {
   keycloak: keycloakConfig,
-  serviceURL: 'http://127.0.0.1:8197/api/v1/campaign/manager',
-  localServiceURL: 'http://localhost:9110/api',
-  pageSize:10,
+  serviceURL: 'http://127.0.0.1:8197/api/v1/campaign/manager/',
+  pageSize:20,
   production: false
 };
 

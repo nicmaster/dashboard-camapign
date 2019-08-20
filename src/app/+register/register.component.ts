@@ -8,7 +8,7 @@ import { RestService} from "../services/rest.service";
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  public campaignsData: any[];
+  public campaignsData: {};
 
   constructor(private restService: RestService) { }
 
@@ -19,7 +19,8 @@ export class RegisterComponent implements OnInit {
   getCampaignsData(){
     this.restService.listOfCampaigns()
     .subscribe(data =>{
-      this.campaignsData = data['campaigns'];
+      this.campaignsData = data;
+      console.log(data);
     },
       (error)=>{
         console.log(error.error.message)

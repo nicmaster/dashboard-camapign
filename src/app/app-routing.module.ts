@@ -45,6 +45,13 @@ const routes: Routes = [
       }
     },
     {
+      path: 'campaign-setup/id/:id/campaign-code/:campcode/setupid/:setid',
+      loadChildren: './+form/input-text/input-text.module#InputTextModule',
+      data: {
+        title: 'Campaign Setup',
+      }
+    },
+    {
       path: 'boxs',
       data: {
         title: 'Boxs',

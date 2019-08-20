@@ -1,5 +1,5 @@
-<mk-box header="{{campaignsData.name}}" [isCollapsable]="false" [isRemovable]="false">
-    <p><strong>{{campaignsData.desc}}</strong></p>
+<mk-box header="{{campaignsData.campaignName}}" [isCollapsable]="false" [isRemovable]="false">
+    <p><strong>{{campaignsData.campaignDescription}}</strong></p>
   </mk-box>
 <!-- Main content -->
     <section class="content">
@@ -61,44 +61,17 @@
                         <label for="inputName" class="col-sm-2 control-label">Campaign Name</label>
     
                         <div class="col-md-6">
-                          <input type="email" class="form-control" readonly id="inputName" style="font-weight: bold; text-transform:uppercase;" value="{{campaignsData.name}}" placeholder="Name">
+                          <input type="email" class="form-control" readonly id="inputName" style="font-weight: bold; text-transform:uppercase;" value="{{campaignsData.campaignName}}" placeholder="Name">
                         </div>
                       </div>
-
-                      <div class="form-group" *ngIf="campaignsConfigsType.active === true">
-                        <label for="inputName" class="col-sm-2 control-label" [hidden]="isTaxCertificate">Document Type</label>
-    
-                        <div class="col-md-6">
-                            <select formControlName="documentTypeDropList" class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;">
-                                <option selected="selected" value="">-- PLEASE SELECT --</option>
-                                <option *ngFor="let item of campaignsConfigsType.listOptions" [value]="item.option" id="{{item.id}}">{{item.option}}</option>
-                              </select>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="invalid-feedback" *ngIf="isSubmitted && documentTypeDropList.errors?.required">
-                            <sup>*</sup>Please select Document Type
-                         </div>
-                        </div>
-                      </div>
-
-                      <div class="form-group" *ngIf="campaignsConfigsPeriod.active === true">
-                          <label for="inputName" class="col-sm-2 control-label">Period(Year)</label>
-      
-                          <div class="col-md-6">
-                              <select class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                  <option selected="selected">-- PLEASE SELECT --</option>
-                                  <option *ngFor="let item of campaignsConfigsPeriod.listOptions" id="{{item.id}}">{{item.option}}</option>
-                                </select>
-                          </div>
-                        </div>
 
                       <div class="form-group" *ngIf="campaignsConfigsAudience.active === true">
                           <label for="inputName" class="col-sm-2 control-label">Target Audience</label>
       
                           <div class="col-md-6">
-                              <select class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                  <option selected="selected">-- PLEASE SELECT --</option>
-                                  <option *ngFor="let item of campaignsConfigsAudience.listOptions" id="{{item.id}}">{{item.option}}</option>
+                              <select formControlName="campaignAudience" class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" (change)="getEventListProfiles($event.target.value)">
+                                  <option style="font-weight: bold; text-transform:uppercase;" selected="selected">-- PLEASE SELECT --</option>
+                                  <option style="font-weight: bold; text-transform:uppercase;" *ngFor="let item of campaignsConfigsAudience.listOptions" [value]="item.id" id="{{item.id}}">{{item.listValue}}</option>
                                 </select>                          
                               </div>
                         </div>
@@ -107,9 +80,9 @@
                             <label for="inputName" class="col-sm-2 control-label">Available Platforms</label>
         
                             <div class="col-md-6">
-                                <select class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" (change)="getEventDetails($event.target.value)">
-                                <option selected="selected">-- PLEASE SELECT --</option>
-                                <option *ngFor="let item of campaignsConfigsPlatforms.listOptions" [value]="item.option" id="{{item.id}}">{{item.option}}</option>
+                                <select formControlName="campaignPlatforms" class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" (change)="getEventDetails($event.target.value)">
+                                <option style="font-weight: bold; text-transform:uppercase;" selected="selected">-- PLEASE SELECT --</option>
+                                <option style="font-weight: bold; text-transform:uppercase;" *ngFor="let item of campaignsConfigsPlatforms.listOptions" [value]="item.id" id="{{item.id}}">{{item.listValue}}</option>
                               </select>
                             </div>
                           </div>
@@ -119,12 +92,13 @@
         
                             <div class="col-md-6">
                                 <textarea class="form-control" formControlName="campaignDesc" rows="4" placeholder="Enter Description ..."></textarea>
-                            </div>
+                                <input type="text" formControlName="campaignCreateTap" [value]="campaignsData.id" hidden readonly>
+                              </div>
                           </div>
 
                           <div class="form-group" style="padding: 20px 0px 0px 0px;">
                               <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" [disabled]="!createCampaignData.valid" (ngSubmit)="onClickSubmit(createCampaignData.value)" class="btn btn-success" style="font-weight: bold;">CREATE CAMPAIGN</button>
+                                <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success" style="font-weight: bold;">CREATE CAMPAIGN</button>
                               </div>
                             </div>
                   </form>
@@ -262,6 +236,84 @@
           </div>
           <!-- /.nav-tabs-custom -->
         </div>
+
+
+        <!--list of data-->
+        <div class="col-md-9" *ngIf="listProfiles === true">
+          <div class="box box-black">
+            <div class="box-header with-border">
+              <h3 class="box-title">Profiles</h3>
+    
+              <div class="box-tools pull-right">
+                <div class="has-feedback">
+                  <input type="text" class="form-control input-sm" placeholder="Search Mail">
+                  <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                </div>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <div class="mailbox-controls">
+                <!-- Check all button -->
+                <!-- /.btn-group -->
+                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                
+                <!-- /.pull-right -->
+              </div>
+              <div class="table-responsive mailbox-messages">
+                <table class="table table-hover table-striped">
+                  <tbody>
+                  <tr role="row">
+                      <th class="sorting_asc"  style="width: 101px;">ID</th>
+                      <th class="sorting" style="width: 103px;">Title</th>
+                      <th class="sorting" style="width: 103px;">Initials</th>
+                      <th class="sorting" style="width: 250px;">Surname</th>
+                      <th class="sorting" style="width: 272px;">CellPhone</th>
+                      <th class="sorting" style="width: 216px;">Email</th>
+                      <th class="sorting" style="width: 159px;">Status</th>
+                  </tr>
+                  <tr *ngFor="let item of memberPagingData.items">
+                    <td class="mailbox-star">{{item.id}}</td>
+                    <td class="mailbox-name">{{item.title}}</td>
+                    <td class="mailbox-subject">{{item.initials}}</td>
+                    <td class="mailbox-name">{{item.surname}}</td>
+                    <td class="mailbox-attachment">{{item.cellNumber}}</td>
+                    <td class="mailbox-name">{{item.email}}</td>
+                    <td class="mailbox-name"></td>
+                </tr>
+                  </tbody>
+                </table>
+                <!-- /.table -->
+              </div>
+              <!-- /.mail-box-messages -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-padding">
+              <div class="mailbox-controls">
+                <!-- Check all paging -->
+                <!-- /.pagging -->
+
+
+ 
+                <div class="col-sm-5">
+                    <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{memberPagingData.operationMessage}} of {{memberPagingData.totalPages}} entries</div>
+                </div> 
+
+                <!--
+                   <div class="col-sm-7">
+                    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate"><ul class="pagination"><li class="paginate_button previous" id="example1_previous"><a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0">Previous</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="1" tabindex="0">1</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="2" tabindex="0">2</a></li><li class="paginate_button active"><a href="#" aria-controls="example1" data-dt-idx="3" tabindex="0">3</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="4" tabindex="0">4</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="5" tabindex="0">5</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="6" tabindex="0">6</a></li><li class="paginate_button next" id="example1_next"><a href="#" aria-controls="example1" data-dt-idx="7" tabindex="0">Next</a></li></ul></div>
+                  </div> -->
+    
+                <!-- /.pull-right -->
+    
+              </div>
+            </div>
+          </div>
+          <!-- /. box -->
+        </div>
+
+
         <!-- /.col -->
       </div>
       <!-- /.row -->
