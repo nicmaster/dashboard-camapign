@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AlertComponent } from './alert.component';
+import { SentMessagesComponent } from './sentmessages.component';
 
 import { AlertModule, BoxModule } from 'angular-admin-lte';
 
 describe('AlertComponent', () => {
-  let component: AlertComponent;
-  let fixture: ComponentFixture<AlertComponent>;
+  let component: SentMessagesComponent;
+  let fixture: ComponentFixture<SentMessagesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -14,13 +14,13 @@ describe('AlertComponent', () => {
         AlertModule,
         BoxModule
       ],
-      declarations: [ AlertComponent ]
+      declarations: [ SentMessagesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AlertComponent);
+    fixture = TestBed.createComponent(SentMessagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

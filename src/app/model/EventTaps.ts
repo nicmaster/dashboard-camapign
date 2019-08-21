@@ -1,5 +1,6 @@
 export enum EventTaps {
+    CreateCampaign = 'CREATE CAMPAIGN',
     SmsOnly = 'SMS ONLY',
-    SmsAndEmail = 'EMAIL AND SMS',
-    EmailOnly = 'EMAIL ONLY'
+    EmailOnly = 'EMAIL ONLY',
+    Complete = 'COMPLETE CAMPAIGN'
   }

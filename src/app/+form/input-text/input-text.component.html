@@ -97,9 +97,12 @@
                           </div>
 
                           <div class="form-group" style="padding: 20px 0px 0px 0px;">
-                              <div class="col-sm-offset-2 col-sm-10">
+                              <div class="col-sm-offset-2 col-sm-10" *ngIf="createButtonCampaign === true">
                                 <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success" style="font-weight: bold;">CREATE CAMPAIGN</button>
                               </div>
+                              <div class="col-sm-offset-2 col-sm-10" *ngIf="updateButtonCampaign === true">
+                                  <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success" style="font-weight: bold;">UPDATE CAMPAIGN</button>
+                                </div>
                             </div>
                   </form>
                

@@ -45,7 +45,7 @@ const routes: Routes = [
       }
     },
     {
-      path: 'campaign-setup/id/:id/campaign-code/:campcode/setupid/:setid',
+      path: 'campaign-setup/id/:id/campaign-code/:campcode/setupid/:setupid',
       loadChildren: './+form/input-text/input-text.module#InputTextModule',
       data: {
         title: 'Campaign Setup',

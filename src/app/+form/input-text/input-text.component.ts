@@ -4,9 +4,12 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators} f
 import { RestService} from "../../services/rest.service";
 import { Router  , ActivatedRoute } from '@angular/router';
 import { DISABLED } from '@angular/forms/src/model';
-import { EventActive} from '../../model/EventActive'
-import { ListProfiles} from '../../model/ListProfiles'
-import { CreateRunnableCampaign} from '../../model/CreateRunnableCampaign'
+import { EventActive} from '../../model/EventActive';
+import { EventTaps} from '../../model/EventTaps';
+import { ListProfiles} from '../../model/ListProfiles';
+import { CreateRunnableCampaign} from '../../model/CreateRunnableCampaign';
+import{ CreateFunctionalTaps} from '../../model/CreateFunctionalTaps';
+
 import { stringify } from '@angular/core/src/util';
 
 @Component({
@@ -16,6 +19,7 @@ import { stringify } from '@angular/core/src/util';
 export class InputTextComponent implements OnInit {
   userForm: FormGroup;
   createRunnableCampaign: CreateRunnableCampaign;
+  createFunctionalTaps: CreateFunctionalTaps;
   public campaignsData: any = {};
   public campaignsConfigsType: any = {};
   public campaignsConfigsPeriod: any = {};
@@ -27,6 +31,10 @@ export class InputTextComponent implements OnInit {
   public processEmail: boolean;
   public listProfiles: boolean;
   public platformDropDown: boolean;
+  public createButtonCampaign: boolean;
+  public updateButtonCampaign: boolean;
+  public CampId: number;
+  public setupid: number;
 
   //form data
   createCampaignData;
@@ -35,8 +43,6 @@ export class InputTextComponent implements OnInit {
   campaignDesc;
   campaignCreateTap;
 
-
-  private CampId: number;
   isTaxCertificate = false;
   public selectedOption: {};
 
@@ -47,12 +53,24 @@ export class InputTextComponent implements OnInit {
     //this.userForm = this.formBuilder.group({
       //firstName: ['', [Validators.required, Validators.email]]
     //});
-    this.createRunnableCampaign = {campaignId: 0, campaignDesc: "", audienceId: 0, platformId: 0}
+    this.createRunnableCampaign = {campaignId: 0, campaignDesc: "", campaignName: "", audienceId: 0, platformId: 0}
+    this.createFunctionalTaps = {setUpId: 0, campaignId: 0, eventTaps: "", active: false}
 
     this.route.params.subscribe((parmas) => {
-      console.log("================Id============="+parmas['id'])
       this.CampId = parmas['id'];
-      this.getCampaignsData(this.CampId);
+      this.setupid = parmas['setupid'];
+      if(this.setupid != null && this.CampId != null){
+        console.log("================setupid============="+parmas['setupid'])
+        this.updateButtonCampaign = true;
+        this.getCampaignsData(this.CampId);
+      }else if(this.CampId != null){
+        console.log("================Id============="+parmas['id'])
+        this.createButtonCampaign = true;
+        this.getCampaignsData(this.CampId);
+      } else{
+        this.router.navigate(['/']);
+      }
+
       //this.getCampaignsDataConfigsDashboard(this.CampId)
 
       this.createCampaignData = new FormGroup({
@@ -173,6 +191,7 @@ export class InputTextComponent implements OnInit {
     this.createRunnableCampaign.campaignDesc = this.createCampaignData.value.campaignDesc;
     this.createRunnableCampaign.audienceId = parseInt(this.createCampaignData.value.campaignAudience);
     this.createRunnableCampaign.platformId = parseInt(this.createCampaignData.value.campaignPlatforms);
+    this.createRunnableCampaign.campaignName = this.campaignsData.campaignName;
 
     console.log(this.createRunnableCampaign);
 
@@ -180,12 +199,34 @@ export class InputTextComponent implements OnInit {
     .subscribe(data =>{
       console.log(data)
       this.createdRunnableCampaigns = data;
+      this.PostCreateFunctionalTaps(campaignID,this.createdRunnableCampaigns.id)
       this.location.go( '/campaign-setup/id/'+campaignID+'/campaign-code/'+this.campaignsData.campaignType+'/setupid/'+this.createdRunnableCampaigns.id);
+      this.createButtonCampaign = false;
+      this.updateButtonCampaign = true;
+          
     },
       (error)=>{
         console.log(error.error.message)
       }
     );
+  }
+
+  PostCreateFunctionalTaps(campaignID:number, setUpId:number){
+
+    this.createFunctionalTaps.active = true;
+    this.createFunctionalTaps.campaignId = campaignID;
+    this.createFunctionalTaps.eventTaps = EventTaps.CreateCampaign;
+    this.createFunctionalTaps.setUpId = setUpId;
+
+    this.restService.createFuncatonalTapsRest(this.createFunctionalTaps)
+    .subscribe(data =>{
+      console.log(data);
+  },
+    (error)=>{
+      console.log(error.error.message)
+    }
+  );
+
   }
 
 }

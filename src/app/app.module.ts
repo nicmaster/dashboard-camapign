@@ -17,6 +17,7 @@ import { LoadingPageModule, MaterialBarModule } from 'angular-loading-page';
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { initializer } from './app-initilizer';
 import { RestService } from "./services/rest.service"
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { RestService } from "./services/rest.service"
     HttpClientModule,
     KeycloakAngularModule,
     LayoutModule.forRoot(adminLteConf),
-    LoadingPageModule, MaterialBarModule
+    LoadingPageModule, MaterialBarModule,
+    NgxPaginationModule
   ],
   providers: [
     {

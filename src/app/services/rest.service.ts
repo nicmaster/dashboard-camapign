@@ -4,6 +4,8 @@ import { SendSmsModel } from '../model/sendsms';
 import { Http, Headers, RequestOptions} from '@angular/http';
 import { environment } from '../../environments/environment';
 import { CreateRunnableCampaign} from '../model/CreateRunnableCampaign';
+import { CreateFunctionalTaps} from '../model/CreateFunctionalTaps';
+import { PersonSearch} from '../model/PersonSearch';
 
 @Injectable()
 export class RestService {
@@ -38,7 +40,7 @@ export class RestService {
     ConfigDashboardCampaignById(campaignId:number){
         let headers = new Headers({'Content-Type':'application/json'})
         let options = new RequestOptions ({headers:headers}) 
-        return this.http.get<any>(this.campaignManagerService+'campaign/configs/campaignid/'+campaignId);
+        return this.http.get<any>(this.campaignManagerService+'/campaign/configs/campaignid/'+campaignId);
     }
     
     pagingMeberByPageAndSize(getPageNo:number){
@@ -50,6 +52,30 @@ export class RestService {
     createARunableCampaign(campaignId:number, createRunnableCampaign:CreateRunnableCampaign){
         let headers = new Headers({'Content-Type':'application/json'})
         let options = new RequestOptions ({headers:headers}) 
-        return this.http.post(this.campaignManagerService+'create/runnable/campaignid/'+this.pageSize, createRunnableCampaign);
+        return this.http.post(this.campaignManagerService+'/create/runnable/campaignid/'+campaignId, createRunnableCampaign);
     }
+
+    createFuncatonalTapsRest(createFunctionalTaps:CreateFunctionalTaps){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.post(this.campaignManagerService+'/create/functional/taps', createFunctionalTaps);
+    }
+
+    listPagingScheduleCampaignByPageAndSize(getPageNo:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/managed/scheduled/page/'+getPageNo+'/size/'+this.pageSize);
+    }
+
+    personRetrieve(getPageNo:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/managed/scheduled/page/'+getPageNo+'/size/'+this.pageSize);
+    }
+    personSearch(personSearch:PersonSearch){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.post("http://127.0.0.1:8091/api/v1/person/search", personSearch);
+    }
+
 }
