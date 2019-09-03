@@ -5,13 +5,15 @@ import { SentMessagesRoutingModule } from './sentmessages-routing.module';
 import { SentMessagesComponent } from './sentmessages.component';
 
 import { AlertModule as MkAlertModule, BoxModule } from 'angular-admin-lte';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   imports: [
     CommonModule,
     SentMessagesRoutingModule,
     MkAlertModule,
-    BoxModule
+    BoxModule,
+    NgxPaginationModule
   ],
   declarations: [SentMessagesComponent]
 })

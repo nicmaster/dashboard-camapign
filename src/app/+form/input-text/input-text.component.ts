@@ -8,8 +8,9 @@ import { EventActive} from '../../model/EventActive';
 import { EventTaps} from '../../model/EventTaps';
 import { ListProfiles} from '../../model/ListProfiles';
 import { CreateRunnableCampaign} from '../../model/CreateRunnableCampaign';
-import{ CreateFunctionalTaps} from '../../model/CreateFunctionalTaps';
-
+import { CreateFunctionalTaps} from '../../model/CreateFunctionalTaps';
+import { SendSmsModel} from '../../model/sendsms'
+import Inputmask from "inputmask";
 import { stringify } from '@angular/core/src/util';
 
 @Component({
@@ -20,6 +21,7 @@ export class InputTextComponent implements OnInit {
   userForm: FormGroup;
   createRunnableCampaign: CreateRunnableCampaign;
   createFunctionalTaps: CreateFunctionalTaps;
+  sendSmsModel: SendSmsModel;
   public campaignsData: any = {};
   public campaignsConfigsType: any = {};
   public campaignsConfigsPeriod: any = {};
@@ -27,14 +29,21 @@ export class InputTextComponent implements OnInit {
   public campaignsConfigsPlatforms: any = {};
   public createdRunnableCampaigns: any = {};
   public memberPagingData: any = {};
+  public eventTapsCampaign: any = {};
+  public testSmsCamData: any = {};
   public processSms: boolean;
   public processEmail: boolean;
+  public processReport: boolean;
   public listProfiles: boolean;
   public platformDropDown: boolean;
   public createButtonCampaign: boolean;
   public updateButtonCampaign: boolean;
+  public showCreateTemplate: boolean;
+  public showSmsTemplate: boolean;
   public CampId: number;
   public setupid: number;
+  public eventCreateCampaign: string;
+  public eventSmsCampaign: string;
 
   //form data
   createCampaignData;
@@ -42,19 +51,22 @@ export class InputTextComponent implements OnInit {
   campaignPlatforms;
   campaignDesc;
   campaignCreateTap;
+  testSmsMessage;
 
   isTaxCertificate = false;
   public selectedOption: {};
 
   constructor(private restService: RestService, 
-    private route: ActivatedRoute,  private router: Router, private location: Location) {}
+    private route: ActivatedRoute,  private router: Router, private location: Location) {
+    }
 
   ngOnInit() {
     //this.userForm = this.formBuilder.group({
       //firstName: ['', [Validators.required, Validators.email]]
     //});
-    this.createRunnableCampaign = {campaignId: 0, campaignDesc: "", campaignName: "", audienceId: 0, platformId: 0}
+    this.createRunnableCampaign = {campaignId: 0, campaignDesc: "", campaignName: "", audienceId: 0, platformId: 0, campaignType: ""}
     this.createFunctionalTaps = {setUpId: 0, campaignId: 0, eventTaps: "", active: false}
+    this.sendSmsModel = {cellNumber:"", message:"", userId: ""}
 
     this.route.params.subscribe((parmas) => {
       this.CampId = parmas['id'];
@@ -66,7 +78,11 @@ export class InputTextComponent implements OnInit {
       }else if(this.CampId != null){
         console.log("================Id============="+parmas['id'])
         this.createButtonCampaign = true;
+        this.eventCreateCampaign = 'PROCESS CAMPAIGN';
+        this.eventSmsCampaign ='INCOMPLETE';
+        this.showCreateTemplate = true;
         this.getCampaignsData(this.CampId);
+
       } else{
         this.router.navigate(['/']);
       }
@@ -80,7 +96,8 @@ export class InputTextComponent implements OnInit {
       
        campaignAudience: new FormControl(''),
        campaignPlatforms: new FormControl(''),
-       campaignCreateTap: new FormControl('')
+       campaignCreateTap: new FormControl(''),
+       testSmsMessage: new FormControl('')
 
      });
 
@@ -192,6 +209,7 @@ export class InputTextComponent implements OnInit {
     this.createRunnableCampaign.audienceId = parseInt(this.createCampaignData.value.campaignAudience);
     this.createRunnableCampaign.platformId = parseInt(this.createCampaignData.value.campaignPlatforms);
     this.createRunnableCampaign.campaignName = this.campaignsData.campaignName;
+    this.createRunnableCampaign.campaignType = this.campaignsData.campaignType;
 
     console.log(this.createRunnableCampaign);
 
@@ -203,6 +221,9 @@ export class InputTextComponent implements OnInit {
       this.location.go( '/campaign-setup/id/'+campaignID+'/campaign-code/'+this.campaignsData.campaignType+'/setupid/'+this.createdRunnableCampaigns.id);
       this.createButtonCampaign = false;
       this.updateButtonCampaign = true;
+      this.showCreateTemplate = false;
+      this.showSmsTemplate = true;
+      this.eventSmsCampaign ='PROCESS CAMPAIGN';
           
     },
       (error)=>{
@@ -221,11 +242,19 @@ export class InputTextComponent implements OnInit {
     this.restService.createFuncatonalTapsRest(this.createFunctionalTaps)
     .subscribe(data =>{
       console.log(data);
+      this.eventTapsCampaign = data;
+      this.eventCreateCampaign = this.eventTapsCampaign.eventTaps;
   },
     (error)=>{
       console.log(error.error.message)
     }
   );
+
+  }
+
+  onClickSubmitTestSms(sendSmsModel: SendSmsModel){
+
+    console.log("=====testDataSms==="+sendSmsModel.cellNumber)
 
   }
 

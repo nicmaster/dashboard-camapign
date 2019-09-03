@@ -4,4 +4,5 @@ export interface CreateRunnableCampaign {
     campaignName: string;
     audienceId: number;
     platformId: number;
+    campaignType: string;
   }

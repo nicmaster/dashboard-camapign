@@ -22,7 +22,7 @@ export class MenuConfigs{
           {label: 'User Profile', route: '/', iconClasses: 'fa fa-road', pullRights: [{text: 'Profile', classes: 'label pull-right bg-green'}]},
           {label: 'Send SMS', route: 'send-sms', iconClasses: 'fa fa-tasks'},
           {label: 'Sent Messages', route: 'sent-messages', iconClasses: 'fa fa-user-plus', pullRights: [{text: 'SMS', classes: 'label pull-right bg-green'}]},
-          {label: 'Campaign Manager', route: 'campaign-manager', iconClasses: 'fa fa-keyboard-o', active: false},
+          {label: 'Campaign Manager', route: 'campaign-manager', iconClasses: 'fa fa-keyboard-o'},
           //this.getLeftSideMenuByRole(),
         ]
       };
@@ -50,7 +50,7 @@ export const adminLteConf = {
     {label: 'User Profile', route: '/', iconClasses: 'fa fa-road', pullRights: [{text: 'Profile', classes: 'label pull-right bg-green'}]},
     {label: 'Send SMS', route: 'send-sms', iconClasses: 'fa fa-tasks'},
     {label: 'Sent Messages', route: 'sent-messages', iconClasses: 'fa fa-user-plus', pullRights: [{text: 'SMS', classes: 'label pull-right bg-green'}]},
-    {label: 'Campaign Manager', route: 'campaign-manager', iconClasses: 'fa fa-keyboard-o', active: false},
+    //{label: 'Campaign Manager', route: 'campaign-manager', iconClasses: 'fa fa-keyboard-o', active: false},
     //this.getLeftSideMenuByRole(),
   ]
 };

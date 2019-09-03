@@ -38,12 +38,12 @@
                 <div class="input-group-addon">
                   <i class="fa fa-phone"></i>
                 </div>
-                <input name="cellNumber" placeholder="(082) 000-0000" id="smsMask" formControlName="cellNumber" type="text" class="form-control" data-inputmask='"mask": "(999) 999-9999"'>
+                <input name="cellNumber" placeholder="(082) 000-0000" id="smsMask" value="{{HistoricalData.formattedCell}}" formControlName="cellNumber" type="text" class="form-control" data-inputmask='"mask": "(999) 999-9999"'>
               </div>
           </div>
           <div class="form-group">
             <label>SMS Message:</label>
-            <textarea id="compose-textarea" formControlName="smsMessage" placeholder="Enter Message ..." class="form-control" style="height: 300px"></textarea>
+            <textarea id="compose-textarea" formControlName="smsMessage" value="{{HistoricalData.message}}" placeholder="Enter Message ..." class="form-control" style="height: 300px"></textarea>
           </div>
 
         </div>

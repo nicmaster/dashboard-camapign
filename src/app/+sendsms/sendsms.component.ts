@@ -4,7 +4,7 @@ import * as Prism from 'prismjs';
 import Inputmask from "inputmask";
 import { KeycloakService} from 'keycloak-angular';
 import { RestService} from "../services/rest.service"
-
+import { Router, ActivatedRoute } from '@angular/router'
 import { SendSmsModel } from '../model/sendsms';
 import { from } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -16,8 +16,10 @@ import Swal from 'sweetalert2';
 })
 export class SendSmsComponent implements OnInit {
   sendsms: SendSmsModel;
-
-  constructor(element: ElementRef, protected keycloak: KeycloakService, private restService: RestService) {
+  public smsId: number;
+  public HistoricalData: any={};
+  
+  constructor(element: ElementRef, protected keycloak: KeycloakService, private restService: RestService, private route: ActivatedRoute) {
     this.setInputMask(element);
   }
 
@@ -36,11 +38,20 @@ export class SendSmsComponent implements OnInit {
   smsMessage;
 
   ngOnInit() {
+    this.route.params.subscribe((parmas) => {
+    this.smsId = parmas['id'];
+      if(this.smsId != null){
+        console.log(this.smsId)
+        this.retrieveSmsMetaData(this.smsId);
+      }
+      
+      });
+
     Inputmask().mask(document.querySelectorAll("input"));
     this.smsData = new FormGroup({
-      cellNumber: new FormControl('', Validators.compose([
-        Validators.required
-     ])),
+      cellNumber: new FormControl('', [
+        Validators.required, Validators.min(10)
+     ]),
       smsMessage: new FormControl('', Validators.compose([
         Validators.required
      ]))
@@ -76,6 +87,25 @@ export class SendSmsComponent implements OnInit {
       }
     });
 
+  }
+
+  retrieveSmsMetaData(eventId:number){
+    this.restService.getSmsMetadatById(eventId)
+    .subscribe(data =>{
+      console.log(data)
+      this.HistoricalData = data;
+
+      this.smsData.setValue({
+        cellNumber: ''+ this.HistoricalData.formattedCell+'',
+        smsMessage: ''+ this.HistoricalData.message+''
+        });​
+    
+    },
+      (error)=>{
+          console.log(error.error.message)
+      }
+    
+    );
   }
   
 }

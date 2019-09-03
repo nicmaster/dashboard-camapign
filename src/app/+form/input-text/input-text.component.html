@@ -3,7 +3,7 @@
   </mk-box>
 <!-- Main content -->
     <section class="content">
-
+        <form [formGroup]="createCampaignData" class="form-horizontal" style="padding: 30px 0px 30px 0px;">
       <div class="row">
         <div class="col-md-3">
 
@@ -22,10 +22,18 @@
 
               <ul class="list-group list-group-unbordered">
                 <li class="list-group-item">
-                  <b>CREATE CAMPAIGN</b> <a class="pull-right"><span class="label label-info">PROCESSING</span></a>
+                  <b>CREATE CAMPAIGN</b> <a class="pull-right">
+
+                    <span *ngIf="eventCreateCampaign =='CREATE CAMPAIGN'" class="label label-success">COMPLETE</span>
+                    <span *ngIf="eventCreateCampaign =='PROCESS CAMPAIGN'" class="label label-primary">PROCESSING</span>
+                  </a>
                 </li>
                 <li class="list-group-item" *ngIf="processSms === true">
-                  <b>PROCESS SMS(S)</b> <a class="pull-right"><span class="label label-danger">INCOMPLETE</span></a>
+                  <b>PROCESS SMS(S)</b> <a class="pull-right">
+                    <span *ngIf="eventSmsCampaign =='INCOMPLETE'" class="label label-danger">INCOMPLETE</span>
+                    <span *ngIf="eventSmsCampaign =='SMS CAMPAIGN'" class="label label-success">COMPLETE</span>
+                    <span *ngIf="eventSmsCampaign =='PROCESS CAMPAIGN'" class="label label-primary">PROCESSING</span>
+                  </a>
                 </li>
                 <li class="list-group-item"  *ngIf="processEmail === true">
                   <b>PROCESS EMAIL(S)</b> <a class="pull-right"><span class="label label-danger">INCOMPLETE</span></a>
@@ -48,15 +56,15 @@
         <div class="col-md-9">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#activity" data-toggle="tab"><strong>CREATE CAMPAIGN</strong></a></li>
-              <li><a href="#settings" *ngIf="processSms === true" data-toggle="tab">PROCESS SMS(S)</a></li>
+              <li [class]="showCreateTemplate == true ? 'active' : ''"><a href="#activity" data-toggle="tab"><strong>CREATE CAMPAIGN</strong></a></li>
+              <li [class]="showSmsTemplate == true ? 'active' : ''"><a href="#settings" *ngIf="processSms === true">PROCESS SMS(S)</a></li>
               <li><a href="#timeline" *ngIf="processEmail === true" data-toggle="tab">PROCESS EMAIL(S)</a></li>
-              <li><a href="#settings" data-toggle="tab">COMPLETE CAMPAIGN</a></li>
+              <li><a href="#complete" data-toggle="tab">COMPLETE CAMPAIGN</a></li>
+              <li><a href="#timeline" *ngIf="processReport === true" data-toggle="tab">REPORT</a></li>
             </ul>
             <div class="tab-content">
-              <div class="active tab-pane" id="activity">
-               
-                  <form [formGroup]="createCampaignData" class="form-horizontal" style="padding: 30px 0px 30px 0px;">
+              <div [class]="showCreateTemplate == true ? 'active tab-pane' : 'tab-pane'" id="activity" *ngIf="showCreateTemplate === true">
+              
                       <div class="form-group">
                         <label for="inputName" class="col-sm-2 control-label">Campaign Name</label>
     
@@ -70,7 +78,7 @@
       
                           <div class="col-md-6">
                               <select formControlName="campaignAudience" class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" (change)="getEventListProfiles($event.target.value)">
-                                  <option style="font-weight: bold; text-transform:uppercase;" selected="selected">-- PLEASE SELECT --</option>
+                                  <option style="font-weight: bold; text-transform:uppercase;" [value]="null" selected="selected">-- PLEASE SELECT --</option>
                                   <option style="font-weight: bold; text-transform:uppercase;" *ngFor="let item of campaignsConfigsAudience.listOptions" [value]="item.id" id="{{item.id}}">{{item.listValue}}</option>
                                 </select>                          
                               </div>
@@ -81,7 +89,7 @@
         
                             <div class="col-md-6">
                                 <select formControlName="campaignPlatforms" class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;" (change)="getEventDetails($event.target.value)">
-                                <option style="font-weight: bold; text-transform:uppercase;" selected="selected">-- PLEASE SELECT --</option>
+                                <option style="font-weight: bold; text-transform:uppercase;" [value]="null" selected="selected">-- PLEASE SELECT --</option>
                                 <option style="font-weight: bold; text-transform:uppercase;" *ngFor="let item of campaignsConfigsPlatforms.listOptions" [value]="item.id" id="{{item.id}}">{{item.listValue}}</option>
                               </select>
                             </div>
@@ -104,7 +112,6 @@
                                   <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success" style="font-weight: bold;">UPDATE CAMPAIGN</button>
                                 </div>
                             </div>
-                  </form>
                
               </div>
               <!-- /.tab-pane -->
@@ -204,32 +211,35 @@
               </div>
               <!-- /.tab-pane -->
 
-              <div class="tab-pane" id="settings">
+              <div [class]="showSmsTemplate == true ? 'active tab-pane' : 'tab-pane'" id="settings" *ngIf="showSmsTemplate === true">
                 <form class="form-horizontal" style="padding: 30px 0px 20px 0px;">
                   <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">SMS Message</label>
 
                     <div class="col-md-6">
-                        <textarea class="form-control" rows="4" placeholder="Enter Message ..."></textarea>
+                        <textarea class="form-control" formControlName="testSmsMessage" rows="4" placeholder="Enter Message ..."></textarea>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputEmail" class="col-sm-2 control-label">** Test Cell No</label>
 
                     <div class="col-md-4">
-                      <input type="email" class="form-control" id="inputEmail" placeholder="(082) 000-0000">
+                      <input type="text" value="{{sendSmsModel.cellNumber}}" class="form-control" placeholder="(082) 000-0000">
                     </div>
 
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-primary">TEST SMS</button>
+                      <button type="submit" class="btn btn-primary" (click)="onClickSubmitTestSms(sendSmsModel)" style="font-weight:bold;">TEST SMS</button>
                     </div>
                     
                   </div>
                   
                   <div class="form-group" style="padding: 70px 0px 0px 0px;">
-                    <div class="col-sm-10">
-                      <button type="submit" style="font-weight: bold;" class="btn btn-success">NEXT</button>
+                    <div class="col-sm-5" style="padding: 0px 0px 0px 80px;">
+                        <button type="submit" style="font-weight: bold;" class="btn btn-default">Back</button>
                     </div>
+                    <div class="col-sm-5" style="padding: 0px 0px 0px 50px;">
+                        <button type="submit" style="font-weight: bold;" class="btn btn-success">NEXT</button>
+                      </div>
                   </div>
                 </form>
               </div>
@@ -320,6 +330,6 @@
         <!-- /.col -->
       </div>
       <!-- /.row -->
-
+    </form>
     </section>
     <!-- /.content -->

@@ -22,6 +22,14 @@ const routes: Routes = [
         roles: [Role.SmsUser]
       }
     }, {
+      path: 'send-sms/id/:id',
+      loadChildren: './+sendsms/sendsms.module#SendSmsModule',
+      canActivate: [AppAuthGuard],
+      data: {
+        title: 'Send SMS',
+        roles: [Role.SmsUser]
+      }
+    }, {
       path: 'sent-messages',
       loadChildren: './+sentmessages/sentmessages.module#AlertModule',
       canActivate: [AppAuthGuard],

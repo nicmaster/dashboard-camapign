@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import { CreateRunnableCampaign} from '../model/CreateRunnableCampaign';
 import { CreateFunctionalTaps} from '../model/CreateFunctionalTaps';
 import { PersonSearch} from '../model/PersonSearch';
+import { KeyCloackOauth} from '../model/KeyCloackOauth';
 
 @Injectable()
 export class RestService {
@@ -76,6 +77,30 @@ export class RestService {
         let headers = new Headers({'Content-Type':'application/json'})
         let options = new RequestOptions ({headers:headers}) 
         return this.http.post("http://127.0.0.1:8091/api/v1/person/search", personSearch);
+    }
+
+    getSmsHistoryStatsByUserID(userID:string){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/sms/history/stats/userid/'+userID);
+    }
+
+    resendSmsEventRest(eventID:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/sms/resend/id/'+eventID);
+    }
+
+    getSmsMetadatById(eventID:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/sms/id/'+eventID);   
+    }​
+
+    userKeycloakLogout(keyCloackOauth: KeyCloackOauth){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.post(this.campaignManagerService+'/user/logout', keyCloackOauth);
     }
 
 }
