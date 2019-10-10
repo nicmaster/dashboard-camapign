@@ -36,10 +36,18 @@
                   </a>
                 </li>
                 <li class="list-group-item"  *ngIf="processEmail === true">
-                  <b>PROCESS EMAIL(S)</b> <a class="pull-right"><span class="label label-danger">INCOMPLETE</span></a>
+                  <b>PROCESS EMAIL(S)</b> <a class="pull-right">
+                      <span *ngIf="eventEmailCampaign =='INCOMPLETE'" class="label label-danger">INCOMPLETE</span>
+                      <span *ngIf="eventEmailCampaign =='EMAIL CAMPAIGN'" class="label label-success">COMPLETE</span>
+                      <span *ngIf="eventEmailCampaign =='PROCESS CAMPAIGN'" class="label label-primary">PROCESSING</span>
+                  </a>
                 </li>
-                <li class="list-group-item">
-                    <b>COMPLETE CAMPAIGN</b> <a class="pull-right"><span class="label label-danger">INCOMPLETE</span></a>
+                <li class="list-group-item" *ngIf="processComplete === true">
+                    <b>COMPLETE CAMPAIGN</b> <a class="pull-right">
+                        <span *ngIf="eventCompleteCampaign =='INCOMPLETE'" class="label label-danger">INCOMPLETE</span>
+                        <span *ngIf="eventCompleteCampaign =='COMPLETE CAMPAIGN'" class="label label-success">COMPLETE</span>
+                        <span *ngIf="eventCompleteCampaign =='PROCESS CAMPAIGN'" class="label label-primary">PROCESSING</span>
+                    </a>
                   </li>
               </ul>
 
@@ -58,8 +66,8 @@
             <ul class="nav nav-tabs">
               <li [class]="showCreateTemplate == true ? 'active' : ''"><a href="#activity" data-toggle="tab"><strong>CREATE CAMPAIGN</strong></a></li>
               <li [class]="showSmsTemplate == true ? 'active' : ''"><a href="#settings" *ngIf="processSms === true">PROCESS SMS(S)</a></li>
-              <li><a href="#timeline" *ngIf="processEmail === true" data-toggle="tab">PROCESS EMAIL(S)</a></li>
-              <li><a href="#complete" data-toggle="tab">COMPLETE CAMPAIGN</a></li>
+              <li [class]="showEmailTemplate == true ? 'active' : ''"><a href="#timeline" *ngIf="processEmail === true">PROCESS EMAIL(S)</a></li>
+              <li [class]="showCompleteTemplate == true ? 'active' : ''"><a href="#complete">COMPLETE CAMPAIGN</a></li>
               <li><a href="#timeline" *ngIf="processReport === true" data-toggle="tab">REPORT</a></li>
             </ul>
             <div class="tab-content">
@@ -84,6 +92,70 @@
                               </div>
                         </div>
 
+                        <div class="form-group" *ngIf="fileOptionUploader === true">
+                          <label for="inputName" class="col-sm-2 control-label">File Upload(.csv)</label>
+      
+                          <div class="col-md-6">
+                            <input type="file" id="file" formControlName="fileUploadControl" class="form-control" ng2FileSelect (change)="FileUploader($event.target.files)" />               
+                              </div>   
+                        </div>
+
+                        <div class="form-group" *ngIf="fileOptionUploader === true">
+                          <label for="inputName" class="col-sm-2 control-label">*</label>
+      
+                          <div class="col-md-10">
+                            <table class="table">
+                              <thead>
+                              <tr>
+                                  <th width="50%">Name</th>
+                                  <th>Size</th>
+                                  <th>Progress</th>
+                                  <th>Status</th>
+                                  <th>Actions</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr *ngFor="let item of uploader.queue">
+                                  <td><strong>{{ item?.file?.name }}</strong></td>
+                                  <td>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                                  <td>
+                                      <div class="progress" style="margin-bottom: 0;">
+                                          <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                      </div>
+                                  </td>
+                                  <td class="text-center">
+                                      <span *ngIf="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                      <span *ngIf="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                      <span *ngIf="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                  </td>
+                                  <td nowrap>
+                                      <button type="button" class="btn btn-success btn-xs"
+                                              (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                          <span class="glyphicon glyphicon-upload"></span> Upload
+                                      </button>
+                                      <span style="padding: 0px 10px 0px 0px;"></span>
+                                      <button type="button" class="btn btn-danger btn-xs"
+                                              (click)="item.remove()">
+                                          <span class="glyphicon glyphicon-trash"></span> Remove
+                                      </button>
+                                  </td>
+                              </tr>
+                              </tbody>
+                          </table>
+          
+                        </div>
+
+                        </div>
+                        
+                        <div class="form-group" *ngIf="campaignsConfigsTemplates?.length > 0">
+                          <label for="inputName" class="col-sm-2 control-label">Document Type</label>
+                            <div class="col-md-6">
+                              <select formControlName="campaignDocumentType" class="form-control select2 select2-hidden-accessible" style="width: 100%; font-weight: bold;">
+                              <option style="font-weight: bold; text-transform:uppercase;" *ngFor="let item of campaignsConfigsTemplates" [value]="item.id" id="{{item.id}}">{{item.description}}</option>
+                              </select>
+                            </div>
+                          </div>​
+
                         <div class="form-group" *ngIf="campaignsConfigsPlatforms.active === true">
                             <label for="inputName" class="col-sm-2 control-label">Available Platforms</label>
         
@@ -103,116 +175,96 @@
                                 <input type="text" formControlName="campaignCreateTap" [value]="campaignsData.id" hidden readonly>
                               </div>
                           </div>
-
-                          <div class="form-group" style="padding: 20px 0px 0px 0px;">
-                              <div class="col-sm-offset-2 col-sm-10" *ngIf="createButtonCampaign === true">
-                                <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success" style="font-weight: bold;">CREATE CAMPAIGN</button>
+               
+                            <div class="box-footer">
+                              <button type="submit" class="btn btn-default pull-left">Cancel</button>
+                              <div *ngIf="createButtonCampaign === true">
+                                <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success pull-right" style="font-weight: bold;">CREATE CAMPAIGN</button>
                               </div>
-                              <div class="col-sm-offset-2 col-sm-10" *ngIf="updateButtonCampaign === true">
-                                  <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success" style="font-weight: bold;">UPDATE CAMPAIGN</button>
+                              <div *ngIf="updateButtonCampaign === true">
+                                  <button type="submit" [disabled]="!createCampaignData.valid" (click)="onClickSubmit(campaignsData.id)" class="btn btn-success pull-right" style="font-weight: bold;">UPDATE CAMPAIGN</button>
                                 </div>
                             </div>
-               
               </div>
               <!-- /.tab-pane -->
-              <div class="tab-pane" id="timeline">
+              <div [class]="showCompleteTemplate == true ? 'active tab-pane' : 'tab-pane'" *ngIf="showCompleteTemplate === true">
                 <!-- The timeline -->
                 <ul class="timeline timeline-inverse">
                   <!-- timeline time label -->
                   <li class="time-label">
-                        <span class="bg-red">
-                          10 Feb. 2014
+                        <span class="bg-green">
+                          10 Sepember, 2019
                         </span>
                   </li>
+
+                  <li>
+                      <i class="fa fa-user bg-aqua"></i>
+  
+                      <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
+  
+                        <h3 class="timeline-header no-border"><b>Campaign Description:</b> {{completeModel.campaignDesc}}, campaign scheduled by <b>{{completeModel.firstName}} {{completeModel.lastName}}</b>
+                        </h3>
+                      </div>
+                    </li>
+
                   <!-- /.timeline-label -->
                   <!-- timeline item -->
-                  <li>
+                  <li *ngIf="processEmail === true">
                     <i class="fa fa-envelope bg-blue"></i>
 
                     <div class="timeline-item">
                       <span class="time"><i class="fa fa-clock-o"></i> 12:05</span>
 
-                      <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
+                      <h3 class="timeline-header">Email(s) to be sent with or without <b>attachment.</b></h3>
 
                       <div class="timeline-body">
-                        Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                        weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                        jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                        quora plaxo ideeli hulu weebly balihoo...
-                      </div>
-                      <div class="timeline-footer">
-                        <a class="btn btn-primary btn-xs">Read more</a>
-                        <a class="btn btn-danger btn-xs">Delete</a>
+                          <b>SUBJECT:</b> {{scheduleCampaign.subject}}
                       </div>
                     </div>
                   </li>
                   <!-- END timeline item -->
                   <!-- timeline item -->
-                  <li>
-                    <i class="fa fa-user bg-aqua"></i>
-
-                    <div class="timeline-item">
-                      <span class="time"><i class="fa fa-clock-o"></i> 5 mins ago</span>
-
-                      <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request
-                      </h3>
-                    </div>
-                  </li>
                   <!-- END timeline item -->
                   <!-- timeline item -->
-                  <li>
+                  <li *ngIf="processSms === true">
                     <i class="fa fa-comments bg-yellow"></i>
 
                     <div class="timeline-item">
                       <span class="time"><i class="fa fa-clock-o"></i> 27 mins ago</span>
 
-                      <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+                      <h3 class="timeline-header"> SMS(s) to be sent</h3>
 
                       <div class="timeline-body">
-                        Take me to your leader!
-                        Switzerland is small and neutral!
-                        We are more like Germany, ambitious and misunderstood!
-                      </div>
-                      <div class="timeline-footer">
-                        <a class="btn btn-warning btn-flat btn-xs">View comment</a>
+                          <b>SMS MESSAGE:</b> {{completeModel.smsMessage}}
+
                       </div>
                     </div>
                   </li>
                   <!-- END timeline item -->
                   <!-- timeline time label -->
-                  <li class="time-label">
-                        <span class="bg-green">
-                          3 Jan. 2014
-                        </span>
-                  </li>
-                  <!-- /.timeline-label -->
-                  <!-- timeline item -->
-                  <li>
-                    <i class="fa fa-camera bg-purple"></i>
-
-                    <div class="timeline-item">
-                      <span class="time"><i class="fa fa-clock-o"></i> 2 days ago</span>
-
-                      <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-
-                      <div class="timeline-body">
-                        <img src="http://placehold.it/150x100" alt="..." class="margin">
-                        <img src="http://placehold.it/150x100" alt="..." class="margin">
-                        <img src="http://placehold.it/150x100" alt="..." class="margin">
-                        <img src="http://placehold.it/150x100" alt="..." class="margin">
-                      </div>
-                    </div>
-                  </li>
+                
                   <!-- END timeline item -->
                   <li>
                     <i class="fa fa-clock-o bg-gray"></i>
                   </li>
                 </ul>
+                <br><br>
+                <div class="box-footer">
+                    <button type="submit" style="font-weight: bold;" class="btn btn-default pull-left">Back</button>
+                    <button type="submit" (click)="onClickCompleteProceed()" style="font-weight: bold;" class="btn btn-success pull-right">COMPLETE</button>
+              </div>
               </div>
               <!-- /.tab-pane -->
 
-              <div [class]="showSmsTemplate == true ? 'active tab-pane' : 'tab-pane'" id="settings" *ngIf="showSmsTemplate === true">
-                <form class="form-horizontal" style="padding: 30px 0px 20px 0px;">
+              <div [class]="showSmsTemplate == true ? 'active tab-pane' : 'tab-pane'" *ngIf="showSmsTemplate === true">
+                  <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">*** SMS PREFIX</label>
+
+                    <div class="col-md-6" style="text-align: left;">
+                      <label class="col-sm-8 control-label" style="text-align: left;">Dear [Title] [Initials] [Surname],</label>
+                    </div>
+                  </div>
                   <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">SMS Message</label>
 
@@ -221,28 +273,56 @@
                     </div>
                   </div>
                   <div class="form-group">
+                      <label for="inputName" class="col-sm-2 control-label">*** SMS SUFFIX</label>
+                        <div class="col-md-6" style="text-align: left;">
+                        <label class="col-sm-8 control-label" style="text-align: left;">Regards,<br>GEPF</label>
+                        </div>
+                      </div>​
+                  <div class="form-group">
                     <label for="inputEmail" class="col-sm-2 control-label">** Test Cell No</label>
 
                     <div class="col-md-4">
-                      <input type="text" value="{{sendSmsModel.cellNumber}}" class="form-control" placeholder="(082) 000-0000">
+                      <input name="testSmsNumber" placeholder="(082) 000-0000" id="smsMask" type="text" formControlName="testSmsNumber" class="form-control" data-inputmask='"mask": "(999) 999-9999"'>
                     </div>
 
                     <div class="col-md-4">
-                      <button type="submit" class="btn btn-primary" (click)="onClickSubmitTestSms(sendSmsModel)" style="font-weight:bold;">TEST SMS</button>
+                      <button type="submit" class="btn btn-primary" (click)="onClickSubmitTestSms(campaignsData.id)" style="font-weight:bold;">TEST SMS</button>
                     </div>
                     
                   </div>
                   
-                  <div class="form-group" style="padding: 70px 0px 0px 0px;">
-                    <div class="col-sm-5" style="padding: 0px 0px 0px 80px;">
-                        <button type="submit" style="font-weight: bold;" class="btn btn-default">Back</button>
-                    </div>
-                    <div class="col-sm-5" style="padding: 0px 0px 0px 50px;">
-                        <button type="submit" style="font-weight: bold;" class="btn btn-success">NEXT</button>
-                      </div>
+                  <div class="box-footer">
+                        <button type="submit" style="font-weight: bold;" class="btn btn-default pull-left">Back</button>
+                        <button type="submit" (click)="onClickSmsProceed()" style="font-weight: bold;" class="btn btn-success pull-right">PROCEED</button>
                   </div>
-                </form>
+               
               </div>
+
+              <div [class]="showEmailTemplate == true ? 'active tab-pane' : 'tab-pane'" *ngIf="showEmailTemplate === true">
+                <div class="form-group">
+                  <label for="inputName" class="col-sm-2 control-label">Subject</label>
+
+                  <div class="col-md-6">
+                      <textarea class="form-control" [value]="scheduleCampaign.subject" formControlName="emailSubjectMessage" rows="4" placeholder="Subject ..."></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-sm-2 control-label">*</label>
+
+                    <div class="col-md-4">
+                      <button type="submit" (click)="onClickMockEmail()" class="btn btn-primary" style="font-weight:bold;">TEST EMAIL</button>
+                    </div>
+                    
+                  </div>
+                
+              
+                
+                <div class="box-footer">
+                      <button type="submit" style="font-weight: bold;" class="btn btn-default pull-left">Back</button>
+                      <button type="submit" (click)="onClickEmailProceed()" style="font-weight: bold;" class="btn btn-success pull-right">PROCEED</button>
+                </div>
+             
+            </div>
               <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->
@@ -250,7 +330,7 @@
           <!-- /.nav-tabs-custom -->
         </div>
 
-
+        <div class="col-md-3"></div>
         <!--list of data-->
         <div class="col-md-9" *ngIf="listProfiles === true">
           <div class="box box-black">
@@ -312,6 +392,83 @@
                 <div class="col-sm-5">
                     <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing {{memberPagingData.operationMessage}} of {{memberPagingData.totalPages}} entries</div>
                 </div> 
+
+                <!--
+                   <div class="col-sm-7">
+                    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate"><ul class="pagination"><li class="paginate_button previous" id="example1_previous"><a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0">Previous</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="1" tabindex="0">1</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="2" tabindex="0">2</a></li><li class="paginate_button active"><a href="#" aria-controls="example1" data-dt-idx="3" tabindex="0">3</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="4" tabindex="0">4</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="5" tabindex="0">5</a></li><li class="paginate_button "><a href="#" aria-controls="example1" data-dt-idx="6" tabindex="0">6</a></li><li class="paginate_button next" id="example1_next"><a href="#" aria-controls="example1" data-dt-idx="7" tabindex="0">Next</a></li></ul></div>
+                  </div> -->
+    
+                <!-- /.pull-right -->
+    
+              </div>
+            </div>
+          </div>
+          <!-- /. box -->
+        </div>
+
+        <!--list of data-->
+        <div class="col-md-9" *ngIf="listOfUploadedProfiles === true">
+          <div class="box box-black">
+            <div class="box-header with-border">
+              <h3 class="box-title">Uploaded Meta Data</h3>
+    
+              <div class="box-tools pull-right">
+                <div class="has-feedback">
+                  <input type="text" class="form-control input-sm" placeholder="Search Mail">
+                  <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                </div>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <div class="mailbox-controls">
+                <!-- Check all button -->
+                <!-- /.btn-group -->
+                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                
+                <!-- /.pull-right -->
+              </div>
+              <div class="table-responsive mailbox-messages">
+                <table class="table table-hover table-striped">
+                  <tbody>
+                  <tr role="row">
+                      <th class="sorting_asc"  style="width: 101px;">Party ID</th>
+                      <th class="sorting" style="width: 103px;">Title</th>
+                      <th class="sorting" style="width: 103px;">Initials</th>
+                      <th class="sorting" style="width: 250px;">Surname</th>
+                      <th class="sorting" style="width: 272px;">CellPhone</th>
+                      <th class="sorting" style="width: 216px;">Email</th>
+                      <th class="sorting" style="width: 159px;"></th>
+                  </tr>
+                  <tr *ngFor="let item of UploadedmemberPagingData.memberDtos">
+                    <td class="mailbox-star">{{item.partyId}}</td>
+                    <td class="mailbox-name">{{item.title}}</td>
+                    <td class="mailbox-subject">{{item.initials}}</td>
+                    <td class="mailbox-name">{{item.surname}}</td>
+                    <td class="mailbox-attachment">{{item.cellNumber}}</td>
+                    <td class="mailbox-name">{{item.email}}</td>
+                    <td class="mailbox-name"></td>
+                </tr>
+                  </tbody>
+                </table>
+                <!-- /.table -->
+              </div>
+              <!-- /.mail-box-messages -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-padding">
+              <div class="mailbox-controls">
+                <!-- Check all paging -->
+                <!-- /.pagging -->
+
+
+ 
+                <div class="col-sm-5">
+                  <br>
+                    <div class="dataTables_info" id="example1_info" role="status" aria-live="polite" style="font-weight: bold;">Showing {{UploadedmemberPagingData.filePages}} entries</div>
+                  <br>
+                  </div> 
 
                 <!--
                    <div class="col-sm-7">

@@ -62,10 +62,12 @@
                     <td class="mailbox-name"><strong>{{item.campaignName}}</strong></td>
                     <td class="mailbox-subject">{{item.campaignDesc}}</td>
                     <td class="mailbox-name">{{item.startDate}}</td>
-                    <td class="mailbox-name"><span class="label label-danger"><b>INCOMPLETE</b></span></td>
                     <td class="mailbox-name">
-                        <a href="/#/campaign-setup/id/{{item.campaignId}}/campaign-code/{{item.campaignType}}/setupid/{{item.id}}" style="color:black; font-weight: bold;">Edit</a>
-                    </td>
+                        <span *ngIf="item.statusCampaign=='INCOMPLETE'" class="label label-danger"><b>{{item.statusCampaign}}</b></span>
+                        <span *ngIf="item.statusCampaign=='COMPLETE'" class="label label-primary"><b>{{item.statusCampaign}}</b></span>                    </td>
+                    <td class="mailbox-name">
+                        <a *ngIf="item.statusCampaign=='INCOMPLETE'" href="/campaign-manager-ui/#/campaign-setup/id/{{item.campaignId}}/campaign-code/{{item.campaignType}}/setupid/{{item.id}}" style="color:black; font-weight: bold;">Edit</a>
+                        <a *ngIf="item.statusCampaign=='COMPLETE'" href="/campaign-manager-ui/#/" style="color:black; font-weight: bold;">Report</a>                    </td>
                 </tr>
                 </tbody>
               </table>

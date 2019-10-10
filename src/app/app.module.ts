@@ -18,6 +18,9 @@ import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { initializer } from './app-initilizer';
 import { RestService } from "./services/rest.service"
 import { NgxPaginationModule } from 'ngx-pagination';
+import { SessionExpirationAlert, SessionInteruptService } from 'session-expiration-alert';
+import { AppSessionInteruptService } from './services/app-session-interupt.service';
+import { MyDatePickerModule } from 'mydatepicker';
 
 @NgModule({
   imports: [
@@ -31,7 +34,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     KeycloakAngularModule,
     LayoutModule.forRoot(adminLteConf),
     LoadingPageModule, MaterialBarModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MyDatePickerModule,
+    SessionExpirationAlert.forRoot({totalMinutes: 30})
   ],
   providers: [
     {
@@ -40,7 +45,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
       multi: true,
       deps: [KeycloakService]
     },
-    RestService
+    {
+      provide: SessionInteruptService,
+      useClass: AppSessionInteruptService
+    },
+    RestService,
   ],
   declarations: [
     AppComponent,

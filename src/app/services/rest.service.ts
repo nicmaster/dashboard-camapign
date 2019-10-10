@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SendSmsModel } from '../model/sendsms';
+import {SendMockTestSmsModel } from '../model/SendMockTestSmsModel';
 import { Http, Headers, RequestOptions} from '@angular/http';
 import { environment } from '../../environments/environment';
 import { CreateRunnableCampaign} from '../model/CreateRunnableCampaign';
 import { CreateFunctionalTaps} from '../model/CreateFunctionalTaps';
 import { PersonSearch} from '../model/PersonSearch';
 import { KeyCloackOauth} from '../model/KeyCloackOauth';
+import { from } from 'rxjs';
+import { MockSendCampaignModel} from '../model/MockSendCampaignModel';
 
 @Injectable()
 export class RestService {
@@ -36,6 +39,12 @@ export class RestService {
         let headers = new Headers({'Content-Type':'application/json'})
         let options = new RequestOptions ({headers:headers}) 
         return this.http.get<any>(this.campaignManagerService+'/campaign/id/'+campaignId);
+    }
+
+    scheduleCampaignById(campaignId:number, templateID:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/schedule/campaign/id/'+campaignId+'/templateID/'+templateID);
     }
 
     ConfigDashboardCampaignById(campaignId:number){
@@ -103,4 +112,45 @@ export class RestService {
         return this.http.post(this.campaignManagerService+'/user/logout', keyCloackOauth);
     }
 
+    sendMockTestSms(sendmockSms:SendMockTestSmsModel){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.post(this.campaignManagerService+'/mock/test/send/sms', sendmockSms);
+    }
+
+    completeCampaingRest(setUpId:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/complete/setup/id/'+setUpId);
+    }
+
+    mockSendCampaignTest(mockSendCampaign:MockSendCampaignModel){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.post(this.campaignManagerService+'/mock/send/mail', mockSendCampaign);
+    }
+
+    updateSmsMessage(setUpId:number, sendSmsModel: SendSmsModel){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.post(this.campaignManagerService+'/update/setup/message/'+setUpId, sendSmsModel);
+    }
+
+    GetListbusinessConnect(){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/business/connect/list');
+    }​
+
+    GetSmsHistoryByConnectIDAndDateRange(id:number, startdate:string, enddate:string, pageNo:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/sms/history/business/id/'+id+'/startdate/'+startdate+'/enddate/'+enddate+'/page/'+pageNo+'/size/'+this.pageSize);
+    }
+
+    pagRunnableSetupCampaign(id:number){
+        let headers = new Headers({'Content-Type':'application/json'})
+        let options = new RequestOptions ({headers:headers}) 
+        return this.http.get<any>(this.campaignManagerService+'/view/runnable/setup/id/'+id);
+    }​
 }

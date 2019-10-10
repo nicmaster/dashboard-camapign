@@ -60,16 +60,16 @@ const routes: Routes = [
       }
     },
     {
-      path: 'boxs',
+      path: 'reports',
       data: {
-        title: 'Boxs',
+        title: 'reports',
       },
       children: [
         {
-          path: 'box',
+          path: 'sms',
           loadChildren: './+boxs/box-default/box-default.module#BoxDefaultModule',
           data: {
-            title: 'Box'
+            title: 'SMS(s) Report'
           }
         }, {
           path: 'info-box',
@@ -85,16 +85,17 @@ const routes: Routes = [
           }
         }
       ]}, {
-        path: 'dropdown',
+        path: 'manage-sms-groups',
         loadChildren: './+dropdown/dropdown.module#DropdownModule',
         data: {
-          title: 'Dropdown',
+          title: 'Manage Groups',
+          roles: [Role.SmsUser]
         }
       }, {
-        path: 'tabs',
+        path: 'manage-sms-groups-create',
         loadChildren: './+tabs/tabs.module#TabsModule',
         data: {
-          title: 'Tabs',
+          title: 'Create A Group',
         }
       }
     ]
